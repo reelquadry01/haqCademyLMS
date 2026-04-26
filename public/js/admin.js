@@ -85,7 +85,7 @@ const adminApp = {
       { label: 'Total Courses', value: s.totalCourses, icon: '📚', color: 'var(--primary-100)' },
       { label: 'Total Lessons', value: s.totalLessons, icon: '🎬', color: '#D1FAE5' },
       { label: 'Active Students', value: s.totalStudents, icon: '👥', color: '#DBEAFE' },
-      { label: 'Completions', value: s.totalCompletions, icon: '🏆', color: '#FEF3C7' },
+      { label: 'Completion Rate', value: s.totalStudents > 0 ? Math.round((s.totalCompletions / s.totalStudents) * 100) + '%' : '0%', icon: '🏆', color: '#FEF3C7' },
     ].map(stat => `
       <div class="admin-stat-card">
         <div class="admin-stat-header">

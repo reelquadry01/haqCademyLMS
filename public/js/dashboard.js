@@ -55,10 +55,11 @@
     const mins = course.total_duration_minutes % 60;
     const durStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
 
+    const thumb = getCourseThumbnail(course.category);
     return `
     <a href="/course/${course.id}" class="course-card" style="text-decoration:none">
-      <div class="course-card-thumb">
-        <div class="course-card-thumb-icon">📊</div>
+      <div class="course-card-thumb" style="background:${thumb.bg}">
+        <div class="course-card-thumb-svg">${thumb.svg}</div>
         <div class="course-card-level">${course.level || 'Beginner'}</div>
       </div>
       <div class="course-card-body">

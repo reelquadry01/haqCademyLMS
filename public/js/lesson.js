@@ -3,11 +3,7 @@
   const sid = api.getSessionId();
   const el = (id) => document.getElementById(id);
 
-  // Load lesson data
-  const [lessonRes, progressRes] = await Promise.all([
-    api.get(`/api/lessons/${lessonId}`),
-    api.get('/api/courses/1/nav') // placeholder, updated below
-  ]);
+  const lessonRes = await api.get(`/api/lessons/${lessonId}`);
 
   if (!lessonRes.success) {
     document.body.innerHTML = `<div style="text-align:center;padding:80px;color:var(--text)">
@@ -18,7 +14,6 @@
   const lesson = lessonRes.data;
   const courseId = lesson.course_id;
 
-  // Load progress + nav with correct course
   const [prog, navRes] = await Promise.all([
     api.get(`/api/progress/${courseId}?sid=${sid}`),
     api.get(`/api/courses/${courseId}/nav?sid=${sid}`)
@@ -27,50 +22,64 @@
   const progress = prog.success ? prog.data : { completed: [], percentage: 0 };
   const completedSet = new Set(progress.completed || []);
 
-  // Update page title
   document.title = `${lesson.title} — Haq-Cademy`;
 
-  // Update nav
   el('navCourseName').textContent = lesson.course_title;
   el('navCourseLink').href = `/course/${courseId}`;
   el('navCourseLink').textContent = lesson.course_title;
   updateNavProgress(progress.percentage);
 
-  // Breadcrumb
   el('breadcrumbCourse').textContent = lesson.course_title;
   el('breadcrumbCourse').href = `/course/${courseId}`;
   el('breadcrumbModule').textContent = lesson.module_title;
 
-  // Header
   el('lessonModuleLabel').textContent = lesson.module_title;
   el('lessonNumberBadge').textContent = `Lesson ${lesson.lesson_order}`;
   el('lessonTitle').textContent = lesson.title;
-  el('videoDuration').textContent = `⏱ ${api.formatDuration(lesson.duration_minutes)}`;
 
-  // Sidebar
+  // Show DB duration initially; YouTube API will update it when video loads
+  const dbDuration = lesson.duration_minutes;
+  el('videoDuration').textContent = dbDuration > 0
+    ? `⏱ ${api.formatDuration(dbDuration)}`
+    : '⏱ Loading duration...';
+
   el('sidebarCourseTitle').textContent = lesson.course_title;
   updateSidebarProgress(progress.percentage);
 
-  // Build sidebar nav
   if (navRes.success) buildSidebar(navRes.data, lessonId, completedSet);
 
-  // Video embed
+  // ── Video embed with YouTube iframe API for dynamic duration ──
   if (lesson.video_url) {
     const videoId = extractYouTubeId(lesson.video_url);
     if (videoId) {
-      el('videoWrapper').innerHTML = `
-        <iframe src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1"
-          allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-        </iframe>`;
+      el('videoWrapper').innerHTML = `<div id="ytPlayer"></div>`;
+
+      loadYouTubeAPI().then(() => {
+        new YT.Player('ytPlayer', {
+          videoId,
+          playerVars: { rel: 0, modestbranding: 1, color: 'white' },
+          width: '100%',
+          height: '100%',
+          events: {
+            onReady(e) {
+              const secs = e.target.getDuration();
+              if (secs > 0) {
+                const mins = Math.round(secs / 60);
+                el('videoDuration').textContent = `⏱ ${api.formatDuration(mins)}`;
+              }
+            }
+          }
+        });
+      });
     } else {
       el('videoWrapper').innerHTML = `<div class="video-placeholder">
         <div class="video-placeholder-icon">▶</div>
-        <div class="video-placeholder-text">Unable to embed video. <a href="${lesson.video_url}" target="_blank" style="color:#C4B5FD">Watch on YouTube</a></div>
+        <div class="video-placeholder-text">Unable to embed video. <a href="${lesson.video_url}" target="_blank" style="color:#93C5FD">Watch on YouTube</a></div>
       </div>`;
     }
   }
 
-  // Content
+  // ── Content ──
   el('summaryText').textContent = lesson.summary || 'No summary available for this lesson yet.';
 
   el('conceptsList').innerHTML = (lesson.key_concepts || []).length
@@ -103,27 +112,37 @@
         </div>`).join('')
     : '<p style="color:var(--text-muted);padding:20px">No exercises listed yet.</p>';
 
-  // Resources
   if ((lesson.resources || []).length) {
     el('resourcesList').innerHTML = lesson.resources.map(r => {
-      const iconClass = (r.type || '').toLowerCase() === 'excel' ? 'excel' : (r.type || '').toLowerCase() === 'pdf' ? 'pdf' : 'csv';
-      const icons = { excel: '📗', pdf: '📄', csv: '📊' };
+      const t = (r.type || '').toLowerCase();
+      const iconClass = t === 'excel' || t === 'xlsx' || t === 'xls' ? 'excel'
+        : t === 'pdf' ? 'pdf'
+        : t === 'word' || t === 'doc' || t === 'docx' ? 'word'
+        : 'csv';
+      const svgIcons = {
+        excel: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/><path d="m7 12 2 3 4-6"/></svg>`,
+        pdf:   `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="10" y1="9" x2="14" y2="9"/></svg>`,
+        csv:   `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>`,
+        word:  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="12" y2="9"/></svg>`,
+      };
+      const downloadIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
       return `
         <div class="resource-item">
-          <div class="resource-icon ${iconClass}">${icons[iconClass] || '📎'}</div>
+          <div class="resource-icon ${iconClass}">${svgIcons[iconClass]}</div>
           <div class="resource-info">
             <div class="resource-name">${r.title || r.url}</div>
             <div class="resource-type">${r.type || 'File'}</div>
           </div>
-          ${r.url ? `<a href="${r.url}" class="resource-download" download>⬇</a>` : '<span class="resource-download" style="opacity:0.3" title="Coming soon">⬇</span>'}
+          ${r.url ? `<a href="${r.url}" class="resource-download" download title="Download">${downloadIcon}</a>` : `<span class="resource-download" style="opacity:0.25" title="Coming soon">${downloadIcon}</span>`}
         </div>`;
     }).join('');
   }
 
-  // Notes — load from localStorage
+  // Notes
   const notesKey = `haq_notes_${lessonId}`;
   const saved = localStorage.getItem(notesKey);
   if (saved) el('notesArea').value = saved;
+  if (lesson.notes) el('notesArea').placeholder = `Instructor notes:\n\n${lesson.notes}\n\n— Your notes below —`;
   let notesSaveTimer;
   el('notesArea').addEventListener('input', () => {
     clearTimeout(notesSaveTimer);
@@ -135,14 +154,8 @@
     }, 800);
   });
 
-  // Lesson notes from admin
-  if (lesson.notes) {
-    el('notesArea').placeholder = `Instructor notes:\n\n${lesson.notes}\n\n— Your notes below —`;
-  }
-
-  // Mark complete state
-  const isCompleted = completedSet.has(parseInt(lessonId));
-  setCompleteState(isCompleted);
+  // Mark complete
+  setCompleteState(completedSet.has(parseInt(lessonId)));
 
   el('markCompleteBtn').addEventListener('click', async () => {
     const currently = el('markCompleteBtn').classList.contains('completed');
@@ -161,9 +174,7 @@
               window.location.href = `/certificate/${courseId}`;
             }
           }, 1500);
-        }
-        // Auto-advance to next lesson
-        if (lesson.next_lesson) {
+        } else if (lesson.next_lesson) {
           setTimeout(() => {
             if (confirm('Nice work! Ready for the next lesson?')) {
               window.location.href = `/lesson/${lesson.next_lesson.id}`;
@@ -173,13 +184,12 @@
       } else {
         showToast('Lesson unmarked', 'info');
       }
-      // Refresh sidebar
       const nav2 = await api.get(`/api/courses/${courseId}/nav?sid=${sid}`);
       if (nav2.success) buildSidebar(nav2.data, lessonId, new Set(nav2.data.flatMap(m => m.lessons.filter(l => l.completed).map(l => l.id))));
     }
   });
 
-  // Prev / Next navigation
+  // Prev / Next
   if (lesson.prev_lesson) {
     ['prevBtn', 'prevBtnBottom'].forEach(id => {
       el(id).disabled = false;
@@ -193,7 +203,6 @@
     });
   }
 
-  // Save last viewed lesson
   localStorage.setItem('haq_last_lesson', JSON.stringify({
     lessonId: parseInt(lessonId),
     lessonTitle: lesson.title,
@@ -212,7 +221,7 @@
     });
   });
 
-  // Mobile sidebar toggle
+  // Mobile sidebar
   const sidebar = el('lessonSidebar');
   const overlay = el('sidebarOverlay');
   const mobileBtn = el('mobileSidebarBtn');
@@ -225,7 +234,6 @@
   if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
   if (overlay) overlay.addEventListener('click', closeSidebar);
 
-  // Show mobile toggle at small viewport
   function checkMobile() {
     const isMobile = window.innerWidth <= 1024;
     if (mobileBtn) mobileBtn.style.display = isMobile ? 'flex' : 'none';
@@ -234,6 +242,19 @@
   window.addEventListener('resize', checkMobile);
   checkMobile();
 })();
+
+function loadYouTubeAPI() {
+  return new Promise((resolve) => {
+    if (window.YT && window.YT.Player) { resolve(); return; }
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); resolve(); };
+    if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
+  });
+}
 
 function extractYouTubeId(url) {
   if (!url) return null;

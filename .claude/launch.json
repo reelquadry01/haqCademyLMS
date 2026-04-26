@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Haq-Cademy LMS",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--disable-warning=ExperimentalWarning", "server.js"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

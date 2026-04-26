@@ -415,20 +415,29 @@
 }
 .resource-item:hover { border-color: var(--primary-200); background: var(--primary-50); transform: translateX(4px); text-decoration: none; }
 .resource-icon {
-  width: 42px; height: 42px;
+  width: 44px; height: 44px;
   border-radius: 10px;
   background: var(--gray-100);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem;
   flex-shrink: 0;
 }
-.resource-icon.excel { background: #D1FAE5; }
-.resource-icon.pdf { background: #FEE2E2; }
-.resource-icon.csv { background: #DBEAFE; }
+.resource-icon.excel { background: #D1FAE5; color: #059669; }
+.resource-icon.pdf   { background: #FEE2E2; color: #DC2626; }
+.resource-icon.csv   { background: #DBEAFE; color: #2563EB; }
+.resource-icon.word  { background: #DBEAFE; color: #1D4ED8; }
+.resource-icon svg   { display: block; }
 .resource-info { flex: 1; }
 .resource-name { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
 .resource-type { font-size: 0.8rem; color: var(--text-muted); }
-.resource-download { color: var(--primary-light); font-size: 1rem; }
+.resource-download {
+  color: var(--primary-light);
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.resource-download:hover { background: var(--primary-100); color: var(--primary); text-decoration: none; }
 
 .notes-area {
   width: 100%;

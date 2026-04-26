@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm --version)",
       "Skill(gsd-autonomous)",
-      "Skill(gsd-autonomous:*)"
+      "Skill(gsd-autonomous:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm install *)"
     ]
   }
 }

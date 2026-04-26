@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/css/vars.css">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/animations.css">
 </head>
 <body>
 
@@ -28,7 +29,6 @@
   </div>
   <div class="nav-actions">
     <a href="/" class="btn btn-ghost btn-sm">← Home</a>
-    <a href="/admin" class="btn btn-secondary btn-sm">Admin</a>
   </div>
 </nav>
 
@@ -107,9 +107,9 @@
         <h2 class="dash-section-title">Coming Soon</h2>
       </div>
       <div class="courses-grid">
-        <div class="course-card" style="opacity:0.65;cursor:default">
-          <div class="course-card-thumb" style="background:linear-gradient(135deg,#1a3a5c,#0f4b6e)">
-            <div class="course-card-thumb-icon">📊</div>
+        <div class="course-card" style="opacity:0.7;cursor:default">
+          <div class="course-card-thumb" style="background:#1C1C2E">
+            <div class="course-card-thumb-svg"><svg width="80" height="80" viewBox="0 0 88 88" fill="none"><rect width="88" height="88" rx="18" fill="#1C1C2E"/><rect x="14" y="48" width="16" height="26" rx="4" fill="#F2C811"/><rect x="36" y="32" width="16" height="42" rx="4" fill="#F2C811" opacity="0.85"/><rect x="58" y="18" width="16" height="56" rx="4" fill="#F2C811" opacity="0.7"/></svg></div>
             <div class="course-card-level">Coming Soon</div>
           </div>
           <div class="course-card-body">
@@ -118,9 +118,9 @@
             <div class="course-card-instructor">Transform your data into stunning interactive reports</div>
           </div>
         </div>
-        <div class="course-card" style="opacity:0.65;cursor:default">
-          <div class="course-card-thumb" style="background:linear-gradient(135deg,#1a4a1a,#2d6e2d)">
-            <div class="course-card-thumb-icon">💰</div>
+        <div class="course-card" style="opacity:0.7;cursor:default">
+          <div class="course-card-thumb" style="background:#0A2E1A">
+            <div class="course-card-thumb-svg"><svg width="80" height="80" viewBox="0 0 88 88" fill="none"><rect width="88" height="88" rx="18" fill="#0A2E1A"/><polyline points="14,68 30,46 46,54 72,22" stroke="#4ADE80" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="72" cy="22" r="6" fill="#4ADE80"/><circle cx="46" cy="54" r="4" fill="#4ADE80" opacity="0.7"/><line x1="14" y1="74" x2="78" y2="74" stroke="rgba(74,222,128,0.25)" stroke-width="2"/></svg></div>
             <div class="course-card-level">Coming Soon</div>
           </div>
           <div class="course-card-body">
@@ -129,9 +129,9 @@
             <div class="course-card-instructor">Build investment-grade financial models from scratch</div>
           </div>
         </div>
-        <div class="course-card" style="opacity:0.65;cursor:default">
-          <div class="course-card-thumb" style="background:linear-gradient(135deg,#4a1a2d,#6e2d4a)">
-            <div class="course-card-thumb-icon">📈</div>
+        <div class="course-card" style="opacity:0.7;cursor:default">
+          <div class="course-card-thumb" style="background:#0F0F2E">
+            <div class="course-card-thumb-svg"><svg width="80" height="80" viewBox="0 0 88 88" fill="none"><rect width="88" height="88" rx="18" fill="#0F0F2E"/><circle cx="22" cy="62" r="6" fill="#818CF8"/><circle cx="40" cy="36" r="8" fill="#818CF8" opacity="0.9"/><circle cx="62" cy="50" r="5" fill="#818CF8" opacity="0.75"/><circle cx="72" cy="24" r="7" fill="#818CF8"/><line x1="22" y1="62" x2="40" y2="36" stroke="rgba(129,140,248,0.35)" stroke-width="2"/><line x1="40" y1="36" x2="62" y2="50" stroke="rgba(129,140,248,0.35)" stroke-width="2"/><line x1="62" y1="50" x2="72" y2="24" stroke="rgba(129,140,248,0.35)" stroke-width="2"/></svg></div>
             <div class="course-card-level">Coming Soon</div>
           </div>
           <div class="course-card-body">
@@ -148,7 +148,10 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.378.0/dist/umd/lucide.min.js"></script>
 <script src="/js/api-client.js"></script>
 <script src="/js/dashboard.js"></script>
+<script src="/js/animations.js"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
