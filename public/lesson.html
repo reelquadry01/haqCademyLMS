@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson — Haq-Cademy</title>
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/lesson.css">
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="top-nav" style="position:fixed;top:0;left:0;right:0;z-index:var(--z-nav)">
+  <button class="btn btn-ghost btn-sm" id="sidebarToggle" style="display:none;padding:8px 10px" aria-label="Toggle sidebar">☰</button>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">📊</div>
+    <span id="navCourseName">Haq-Cademy</span>
+  </a>
+  <div class="nav-links">
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="#" id="navCourseLink" class="nav-link">Course</a>
+  </div>
+  <div class="nav-actions" style="margin-left:auto">
+    <div id="navProgress" style="display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--text-muted)">
+      <div class="progress-bar" style="width:120px;height:6px">
+        <div class="progress-fill" id="navProgressFill" style="width:0%"></div>
+      </div>
+      <span id="navProgressPct">0%</span>
+    </div>
+  </div>
+</nav>
+
+<div class="lesson-layout">
+  <div class="lesson-body">
+
+    <!-- Sidebar -->
+    <aside class="lesson-sidebar" id="lessonSidebar">
+      <div class="sidebar-course-header">
+        <div class="sidebar-course-label">Course</div>
+        <div class="sidebar-course-title" id="sidebarCourseTitle">Loading...</div>
+      </div>
+      <div class="sidebar-progress">
+        <div class="sidebar-progress-bar">
+          <div class="sidebar-progress-fill" id="sidebarProgressFill" style="width:0%"></div>
+        </div>
+        <div class="sidebar-progress-text" id="sidebarProgressText">0% complete</div>
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!-- Modules injected by JS -->
+      </nav>
+    </aside>
+
+    <!-- Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="lesson-main" id="lessonMain">
+
+      <!-- Video Section -->
+      <section class="video-section">
+        <div class="video-breadcrumb">
+          <a href="/dashboard">Dashboard</a>
+          <span class="video-breadcrumb-sep">›</span>
+          <a href="#" id="breadcrumbCourse">Course</a>
+          <span class="video-breadcrumb-sep">›</span>
+          <span id="breadcrumbModule">Module</span>
+        </div>
+
+        <div class="lesson-header-info">
+          <div class="lesson-module-label">
+            <span id="lessonModuleLabel">Module</span>
+            <span class="lesson-number-badge" id="lessonNumberBadge">Lesson 1</span>
+          </div>
+          <h1 class="lesson-title" id="lessonTitle">Loading Lesson...</h1>
+        </div>
+
+        <div class="video-container">
+          <div class="video-wrapper" id="videoWrapper">
+            <div class="video-placeholder">
+              <div class="video-placeholder-icon">▶</div>
+              <div class="video-placeholder-text">Video will appear here once added in the admin panel.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="video-meta">
+          <div class="video-duration" id="videoDuration">⏱ Loading...</div>
+          <div style="display:flex;gap:8px">
+            <button id="prevBtn" class="btn btn-ghost btn-sm" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2)" disabled>← Prev</button>
+            <button id="nextBtn" class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1.5px solid rgba(255,255,255,0.2)" disabled>Next →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Tabs -->
+      <section class="content-section">
+        <div class="content-tabs" id="contentTabs">
+          <button class="content-tab active" data-tab="summary">📝 Summary</button>
+          <button class="content-tab" data-tab="concepts">💡 Key Concepts</button>
+          <button class="content-tab" data-tab="examples">🔬 Examples</button>
+          <button class="content-tab" data-tab="exercises">✏️ Exercises</button>
+          <button class="content-tab" data-tab="resources">📎 Resources</button>
+          <button class="content-tab" data-tab="notes">📒 My Notes</button>
+        </div>
+
+        <!-- Summary -->
+        <div class="tab-panel active" id="tab-summary">
+          <p class="tab-summary" id="summaryText">Loading lesson content...</p>
+        </div>
+
+        <!-- Key Concepts -->
+        <div class="tab-panel" id="tab-concepts">
+          <div class="concepts-list" id="conceptsList">
+            <div class="skeleton" style="height:56px;border-radius:8px"></div>
+            <div class="skeleton" style="height:56px;border-radius:8px"></div>
+          </div>
+        </div>
+
+        <!-- Examples -->
+        <div class="tab-panel" id="tab-examples">
+          <div class="examples-list" id="examplesList"></div>
+        </div>
+
+        <!-- Exercises -->
+        <div class="tab-panel" id="tab-exercises">
+          <div class="exercises-list" id="exercisesList"></div>
+        </div>
+
+        <!-- Resources -->
+        <div class="tab-panel" id="tab-resources">
+          <div class="resources-list" id="resourcesList">
+            <div style="text-align:center;padding:40px;color:var(--text-muted)">
+              <div style="font-size:2rem;margin-bottom:12px;opacity:0.4">📎</div>
+              <div style="font-size:0.9rem">Downloadable resources will appear here once uploaded in the admin panel.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="tab-panel" id="tab-notes">
+          <textarea class="notes-area" id="notesArea" placeholder="Take notes as you watch. Your notes are saved automatically in your browser."></textarea>
+          <div class="notes-save-hint" id="notesSaveHint">Notes auto-save to your browser.</div>
+        </div>
+
+      </section>
+
+      <!-- Completion Bar -->
+      <div class="completion-bar">
+        <div class="completion-nav">
+          <button class="btn btn-ghost btn-sm" id="prevBtnBottom" disabled>← Previous</button>
+        </div>
+        <div class="completion-main">
+          <button class="mark-complete-btn" id="markCompleteBtn">
+            <span id="markCompleteIcon">○</span>
+            <span id="markCompleteText">Mark as Complete</span>
+          </button>
+        </div>
+        <div class="completion-nav">
+          <button class="btn btn-primary btn-sm" id="nextBtnBottom" disabled>Next →</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Mobile sidebar toggle -->
+<button class="sidebar-toggle-btn" id="mobileSidebarBtn" aria-label="Open course navigation">☰</button>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/js/api-client.js"></script>
+<script src="/js/lesson.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate — Haq-Cademy</title>
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body { background: #0F0B2D; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+
+    .cert-page-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 860px; margin-bottom: 32px; }
+    .cert-back { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 6px; }
+    .cert-back:hover { color: white; text-decoration: none; }
+    .cert-actions { display: flex; gap: 12px; }
+
+    /* Certificate Design */
+    .certificate {
+      width: 100%;
+      max-width: 860px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .cert-border {
+      position: absolute;
+      inset: 12px;
+      border: 3px solid transparent;
+      border-radius: 14px;
+      background: linear-gradient(white, white) padding-box,
+                  linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED) border-box;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .cert-header {
+      background: linear-gradient(135deg, #1E1B4B 0%, #4C1D95 60%, #6D28D9 100%);
+      padding: 40px 60px 36px;
+      text-align: center;
+      position: relative;
+    }
+    .cert-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: white;
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .cert-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
+    .cert-logo-icon {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .cert-logo-text { font-size: 1.375rem; font-weight: 900; color: white; }
+    .cert-presents { color: rgba(255,255,255,0.6); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .cert-body { padding: 48px 60px 40px; text-align: center; }
+    .cert-title-line { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 12px; }
+    .cert-this { font-size: 2rem; font-weight: 900; color: #1E1B4B; margin-bottom: 4px; font-style: italic; }
+    .cert-certifies { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 20px; }
+
+    .cert-recipient {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 4px;
+      line-height: 1.1;
+      font-style: italic;
+    }
+    .cert-divider {
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-light), var(--accent));
+      border-radius: 999px;
+      margin: 16px auto;
+    }
+    .cert-completion { color: var(--text-muted); font-size: 1rem; margin-bottom: 8px; }
+    .cert-course-name { font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .cert-course-meta { color: var(--text-muted); font-size: 0.9rem; }
+
+    .cert-footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 24px 60px 40px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+    .cert-sig { text-align: center; }
+    .cert-sig-line { width: 140px; height: 2px; background: var(--border); margin-bottom: 8px; }
+    .cert-sig-name { font-size: 0.875rem; font-weight: 700; color: var(--text); }
+    .cert-sig-role { font-size: 0.75rem; color: var(--text-muted); }
+    .cert-seal {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1E1B4B, #4C1D95);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px rgba(91,33,182,0.3);
+    }
+    .cert-seal-text { font-size: 0.45rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+    .cert-num { font-size: 0.7rem; color: var(--text-muted); }
+    .cert-date { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Incomplete State */
+    .cert-incomplete {
+      text-align: center;
+      padding: 60px 40px;
+      color: white;
+    }
+    .cert-incomplete-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+    .cert-incomplete h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+    .cert-incomplete p { color: rgba(255,255,255,0.6); margin-bottom: 28px; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .cert-progress-bar { max-width: 400px; margin: 0 auto 24px; }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .cert-page-header, .cert-actions { display: none; }
+      .certificate { box-shadow: none; max-width: 100%; border-radius: 0; }
+    }
+    @media (max-width: 640px) {
+      .cert-header, .cert-body, .cert-footer { padding-left: 24px; padding-right: 24px; }
+      .cert-this { font-size: 1.5rem; }
+      .cert-recipient { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="certLoading" style="color:white;text-align:center;padding:60px">
+  <div style="font-size:2.5rem;margin-bottom:16px">🏆</div>
+  <p style="color:rgba(255,255,255,0.6)">Checking your course completion...</p>
+</div>
+
+<div id="certContent" style="display:none;width:100%;max-width:860px">
+  <div class="cert-page-header">
+    <a href="/dashboard" class="cert-back">← Back to Dashboard</a>
+    <div class="cert-actions">
+      <button onclick="window.print()" class="btn btn-ghost btn-sm" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)">🖨 Print</button>
+      <a href="/dashboard" class="btn btn-primary btn-sm">Continue Learning</a>
+    </div>
+  </div>
+
+  <div class="certificate" id="certCard">
+    <div class="cert-border"></div>
+
+    <div class="cert-header">
+      <div class="cert-logo">
+        <div class="cert-logo-icon">📊</div>
+        <div class="cert-logo-text">Haq-Cademy</div>
+      </div>
+      <div class="cert-presents">Certificate of Completion</div>
+    </div>
+
+    <div class="cert-body">
+      <div class="cert-title-line">This Certifies That</div>
+      <div class="cert-recipient" id="certName">Student Name</div>
+      <div class="cert-divider"></div>
+      <div class="cert-completion">has successfully completed the course</div>
+      <div class="cert-course-name" id="certCourse">Course Title</div>
+      <div class="cert-course-meta" id="certMeta">Loading...</div>
+    </div>
+
+    <div class="cert-footer">
+      <div class="cert-sig">
+        <div class="cert-sig-line"></div>
+        <div class="cert-sig-name" id="certInstructor">Instructor</div>
+        <div class="cert-sig-role">Course Instructor</div>
+      </div>
+      <div style="text-align:center">
+        <div class="cert-seal">
+          <div>🏆</div>
+          <div class="cert-seal-text">Certified</div>
+        </div>
+        <div class="cert-num" id="certNum" style="margin-top:8px">—</div>
+      </div>
+      <div class="cert-sig" style="text-align:right">
+        <div class="cert-sig-line" style="margin-left:auto"></div>
+        <div class="cert-sig-name">Haq-Cademy</div>
+        <div class="cert-date" id="certDate">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="certIncomplete" style="display:none">
+  <div class="cert-incomplete">
+    <div class="cert-incomplete-icon">🔒</div>
+    <h2>Certificate Locked</h2>
+    <p>Complete all lessons in the course to earn your certificate.</p>
+    <div class="cert-progress-bar">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;color:rgba(255,255,255,0.55)">
+        <span>Course Progress</span>
+        <span id="incompleteProgress">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="incompleteBar" style="width:0%"></div>
+      </div>
+    </div>
+    <a href="#" id="resumeIncompleteBtn" class="btn btn-primary">Continue Learning →</a>
+  </div>
+</div>
+
+<script src="/js/api-client.js"></script>
+<script>
+(async () => {
+  const courseId = window.location.pathname.split('/').pop();
+  const api = new APIClient();
+  const sid = api.getSessionId();
+
+  const progress = await api.get(`/api/progress/${courseId}?sid=${sid}`);
+  const course = await api.get(`/api/courses/${courseId}`);
+
+  document.getElementById('certLoading').style.display = 'none';
+
+  if (!progress.success || !course.success) {
+    document.getElementById('certIncomplete').style.display = 'block';
+    return;
+  }
+
+  const { percentage, completed, total } = progress.data;
+  const c = course.data;
+
+  if (percentage < 100) {
+    document.getElementById('certIncomplete').style.display = 'block';
+    document.getElementById('incompleteProgress').textContent = percentage + '%';
+    document.getElementById('incompleteBar').style.width = percentage + '%';
+    // Find first incomplete lesson
+    if (c.modules && c.modules[0]?.lessons[0]) {
+      document.getElementById('resumeIncompleteBtn').href = `/lesson/${c.modules[0].lessons[0].id}`;
+    }
+    return;
+  }
+
+  // Get or create certificate
+  const name = prompt('Enter your name for the certificate:') || 'Student';
+  const certRes = await api.get(`/api/certificate/${courseId}?sid=${sid}&name=${encodeURIComponent(name)}`);
+
+  if (certRes.success) {
+    const cert = certRes.data;
+    document.getElementById('certContent').style.display = 'block';
+    document.getElementById('certName').textContent = cert.student_name || name;
+    document.getElementById('certCourse').textContent = c.title;
+
+    const hours = Math.floor(c.total_duration_minutes / 60);
+    const mins = c.total_duration_minutes % 60;
+    document.getElementById('certMeta').textContent = `${c.total_lessons} Lessons · ${hours}h ${mins}m · ${c.total_modules} Modules`;
+    document.getElementById('certInstructor').textContent = c.instructor_name || 'Haq-Cademy';
+    document.getElementById('certNum').textContent = cert.certificate_number;
+    document.getElementById('certDate').textContent = new Date(cert.issued_at).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  }
+})();
+</script>
+</body>
+</html>

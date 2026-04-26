@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course — Haq-Cademy</title>
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    .course-hero {
+      background: linear-gradient(135deg, #1E1B4B 0%, #4C1D95 100%);
+      padding: 48px 0 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .course-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(245,158,11,0.1) 0%, transparent 60%);
+    }
+    .course-hero-content { position: relative; z-index: 5; color: white; }
+    .course-back { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.55); font-size:0.875rem; text-decoration:none; margin-bottom:20px; transition: color 0.2s; }
+    .course-back:hover { color: white; text-decoration: none; }
+    .course-category-badge {
+      display: inline-block;
+      background: rgba(245,158,11,0.2);
+      border: 1px solid rgba(245,158,11,0.4);
+      color: #FCD34D;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+    }
+    .course-hero-title { font-size: clamp(1.75rem, 3.5vw, 2.75rem); font-weight: 900; margin-bottom: 14px; }
+    .course-hero-desc { color: rgba(255,255,255,0.7); font-size: 1.0625rem; max-width: 600px; line-height: 1.7; margin-bottom: 28px; }
+    .course-meta-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 28px; }
+    .course-meta-pill { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.75); font-size:0.875rem; font-weight:500; }
+    .course-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Progress Ring */
+    .progress-ring-wrap { display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 16px 20px; }
+    .progress-ring { width: 60px; height: 60px; }
+    .progress-ring-circle { fill: none; stroke: rgba(255,255,255,0.15); stroke-width: 5; }
+    .progress-ring-fill { fill: none; stroke: #F59E0B; stroke-width: 5; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .progress-ring-text { font-size: 0.8rem; font-weight: 700; fill: white; }
+    .progress-ring-info { }
+    .progress-ring-pct { font-size: 1.375rem; font-weight: 800; color: white; line-height: 1; }
+    .progress-ring-label { font-size: 0.8rem; color: rgba(255,255,255,0.55); margin-top: 2px; }
+
+    /* Module Accordion */
+    .modules-container { padding: 0; }
+    .module-accordion {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 12px;
+      background: var(--bg-card);
+      transition: box-shadow 0.2s;
+    }
+    .module-accordion:hover { box-shadow: var(--shadow-md); }
+    .module-accordion-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .module-accordion-header:hover { background: var(--gray-50); }
+    .module-num {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--primary-100);
+      color: var(--primary-light);
+      font-size: 0.85rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .module-num.complete { background: var(--success-light); color: var(--success); }
+    .module-header-info { flex: 1; }
+    .module-header-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .module-header-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 12px; }
+    .module-arrow { color: var(--text-muted); transition: transform 0.25s; flex-shrink: 0; font-size: 1rem; }
+    .module-accordion.open .module-arrow { transform: rotate(180deg); }
+    .module-lessons { display: none; border-top: 1px solid var(--border); }
+    .module-accordion.open .module-lessons { display: block; }
+
+    .lesson-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px 14px 70px;
+      border-bottom: 1px solid var(--gray-100);
+      text-decoration: none;
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+    .lesson-row:last-child { border-bottom: none; }
+    .lesson-row:hover { background: var(--primary-50); }
+    .lesson-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      color: transparent;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .lesson-row.completed .lesson-check { background: var(--success); border-color: var(--success); color: white; }
+    .lesson-row-info { flex: 1; }
+    .lesson-row-title { font-size: 0.9375rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .lesson-row-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .lesson-row-duration { font-size: 0.8rem; color: var(--text-muted); flex-shrink: 0; }
+    .lesson-play-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--primary-100);
+      color: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .lesson-row:hover .lesson-play-btn { background: var(--primary-light); color: white; }
+
+    /* Content Layout */
+    .course-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      padding: 40px 0 60px;
+      align-items: start;
+    }
+    .course-sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+      box-shadow: var(--shadow-lg);
+    }
+    .sidebar-card-preview {
+      height: 180px;
+      background: linear-gradient(135deg, #1E1B4B, #4C1D95);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+    }
+    .sidebar-card-body { padding: 24px; }
+    .sidebar-card-title { font-size: 1.0625rem; font-weight: 800; margin-bottom: 16px; }
+    .sidebar-card-stats { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .sidebar-stat { display: flex; align-items: center; gap: 10px; font-size: 0.875rem; }
+    .sidebar-stat-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .sidebar-stat-text { color: var(--text-muted); }
+    .sidebar-stat-text strong { color: var(--text); }
+
+    @media (max-width: 1024px) {
+      .course-content-grid { grid-template-columns: 1fr; }
+      .course-sidebar-card { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">📊</div>
+    Haq-Cademy
+  </a>
+  <div class="nav-links">
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/dashboard" class="nav-link active">My Courses</a>
+  </div>
+  <div class="nav-actions">
+    <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
+  </div>
+</nav>
+
+<!-- Course Hero -->
+<section class="course-hero">
+  <div class="container course-hero-content">
+    <a href="/dashboard" class="course-back">← Back to Dashboard</a>
+    <div class="course-category-badge" id="courseCategory">Loading...</div>
+    <h1 class="course-hero-title" id="courseTitle">Loading Course...</h1>
+    <p class="course-hero-desc" id="courseDesc">Loading...</p>
+    <div class="course-meta-row">
+      <div class="course-meta-pill">⏱ <span id="metaDuration">—</span></div>
+      <div class="course-meta-pill">📚 <span id="metaLessons">—</span> lessons</div>
+      <div class="course-meta-pill">📁 <span id="metaModules">—</span> modules</div>
+      <div class="course-meta-pill">📊 <span id="metaLevel">—</span></div>
+    </div>
+    <div class="course-cta-row">
+      <div class="progress-ring-wrap" id="progressRingWrap" style="display:none">
+        <svg class="progress-ring" viewBox="0 0 60 60">
+          <circle class="progress-ring-circle" cx="30" cy="30" r="25"/>
+          <circle class="progress-ring-fill" id="progressRingFill" cx="30" cy="30" r="25" stroke-dasharray="157" stroke-dashoffset="157"/>
+        </svg>
+        <div class="progress-ring-info">
+          <div class="progress-ring-pct" id="progressPct">0%</div>
+          <div class="progress-ring-label">Complete</div>
+        </div>
+      </div>
+      <a href="#" id="startBtn" class="btn btn-primary btn-lg">▶ Start First Lesson</a>
+      <a href="#" id="certBtn" class="btn btn-success btn-lg" style="display:none">🏆 Get Certificate</a>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="course-content-grid">
+
+    <!-- Modules Accordion -->
+    <div>
+      <h2 style="margin-bottom:20px;font-size:1.375rem">Course Content</h2>
+      <div class="modules-container" id="modulesContainer">
+        <div class="module-accordion skeleton" style="height:72px"></div>
+        <div class="module-accordion skeleton" style="height:72px"></div>
+        <div class="module-accordion skeleton" style="height:72px"></div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div>
+      <div class="course-sidebar-card">
+        <div class="sidebar-card-preview">📊</div>
+        <div class="sidebar-card-body">
+          <div class="sidebar-card-title" id="sidebarTitle">Loading...</div>
+          <div class="sidebar-card-stats">
+            <div class="sidebar-stat">
+              <div class="sidebar-stat-icon">⏱</div>
+              <div class="sidebar-stat-text"><strong id="sidebarDuration">—</strong> total</div>
+            </div>
+            <div class="sidebar-stat">
+              <div class="sidebar-stat-icon">📚</div>
+              <div class="sidebar-stat-text"><strong id="sidebarLessons">—</strong> lessons</div>
+            </div>
+            <div class="sidebar-stat">
+              <div class="sidebar-stat-icon">📁</div>
+              <div class="sidebar-stat-text"><strong id="sidebarModules">—</strong> modules</div>
+            </div>
+            <div class="sidebar-stat">
+              <div class="sidebar-stat-icon">👤</div>
+              <div class="sidebar-stat-text" id="sidebarInstructor">—</div>
+            </div>
+          </div>
+          <a href="#" id="sidebarBtn" class="btn btn-primary btn-full">▶ Start Learning</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/js/api-client.js"></script>
+<script src="/js/course.js"></script>
+</body>
+</html>

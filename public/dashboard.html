@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — Haq-Cademy</title>
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">📊</div>
+    Haq-Cademy
+  </a>
+  <div class="nav-links">
+    <a href="/dashboard" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="/dashboard" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      My Courses
+    </a>
+  </div>
+  <div class="nav-actions">
+    <a href="/" class="btn btn-ghost btn-sm">← Home</a>
+    <a href="/admin" class="btn btn-secondary btn-sm">Admin</a>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="container welcome-content">
+      <div class="welcome-tag">👋 Welcome back</div>
+      <h1 class="welcome-title">Your Learning Dashboard</h1>
+      <p class="welcome-subtitle">Track your progress, resume lessons, and earn certificates.</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:0;padding-bottom:60px">
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-purple">📚</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statCourses">—</div>
+          <div class="stat-label">Courses Available</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green">✅</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statCompleted">—</div>
+          <div class="stat-label">Lessons Completed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-amber">⚡</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statStreak">—</div>
+          <div class="stat-label">Overall Progress</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue">🏆</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statCerts">—</div>
+          <div class="stat-label">Certificates</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume Card (shown when has progress) -->
+    <div id="resumeSection" style="display:none;margin-bottom:32px">
+      <div class="resume-card">
+        <div class="resume-icon">▶</div>
+        <div class="resume-info">
+          <div class="resume-label">Continue where you left off</div>
+          <div class="resume-title" id="resumeTitle">Loading...</div>
+          <div class="resume-module" id="resumeModule"></div>
+        </div>
+        <a href="#" id="resumeBtn" class="btn" style="background:rgba(255,255,255,0.2);color:white;border:1.5px solid rgba(255,255,255,0.3);flex-shrink:0">Resume →</a>
+      </div>
+    </div>
+
+    <!-- Courses -->
+    <div class="dash-section">
+      <div class="dash-section-header">
+        <h2 class="dash-section-title">Available Courses</h2>
+        <span class="badge badge-primary" id="courseCount">Loading...</span>
+      </div>
+      <div class="courses-grid" id="coursesGrid">
+        <div class="course-card skeleton" style="height:320px"></div>
+        <div class="course-card skeleton" style="height:320px"></div>
+      </div>
+    </div>
+
+    <!-- Coming Soon Courses -->
+    <div class="dash-section" id="comingSoonSection">
+      <div class="dash-section-header">
+        <h2 class="dash-section-title">Coming Soon</h2>
+      </div>
+      <div class="courses-grid">
+        <div class="course-card" style="opacity:0.65;cursor:default">
+          <div class="course-card-thumb" style="background:linear-gradient(135deg,#1a3a5c,#0f4b6e)">
+            <div class="course-card-thumb-icon">📊</div>
+            <div class="course-card-level">Coming Soon</div>
+          </div>
+          <div class="course-card-body">
+            <div class="course-card-category">Business Intelligence</div>
+            <div class="course-card-title">Power BI Mastery</div>
+            <div class="course-card-instructor">Transform your data into stunning interactive reports</div>
+          </div>
+        </div>
+        <div class="course-card" style="opacity:0.65;cursor:default">
+          <div class="course-card-thumb" style="background:linear-gradient(135deg,#1a4a1a,#2d6e2d)">
+            <div class="course-card-thumb-icon">💰</div>
+            <div class="course-card-level">Coming Soon</div>
+          </div>
+          <div class="course-card-body">
+            <div class="course-card-category">Finance</div>
+            <div class="course-card-title">Financial Modeling</div>
+            <div class="course-card-instructor">Build investment-grade financial models from scratch</div>
+          </div>
+        </div>
+        <div class="course-card" style="opacity:0.65;cursor:default">
+          <div class="course-card-thumb" style="background:linear-gradient(135deg,#4a1a2d,#6e2d4a)">
+            <div class="course-card-thumb-icon">📈</div>
+            <div class="course-card-level">Coming Soon</div>
+          </div>
+          <div class="course-card-body">
+            <div class="course-card-category">Analytics</div>
+            <div class="course-card-title">Data Analytics</div>
+            <div class="course-card-instructor">Extract insights from complex datasets with advanced techniques</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/js/api-client.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Skill(gsd-autonomous)",
+      "Skill(gsd-autonomous:*)"
+    ]
+  }
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Haq-Cademy</title>
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="loginScreen" class="admin-login-page">
+  <div class="admin-login-card">
+    <div class="admin-login-logo">
+      <div style="font-size:3rem;margin-bottom:8px">📊</div>
+      <h1 class="admin-login-title">Admin Panel</h1>
+      <p class="admin-login-sub">Sign in to manage Haq-Cademy content</p>
+    </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" id="loginUser" placeholder="admin" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div id="loginError" style="color:var(--danger);font-size:0.875rem;margin-bottom:12px;display:none"></div>
+      <button type="submit" class="btn btn-primary btn-full">Sign In →</button>
+    </form>
+    <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--text-muted)">Default: admin / haqcademy2024</p>
+  </div>
+</div>
+
+<!-- Admin App -->
+<div id="adminApp" class="admin-body" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="admin-logo-icon">📊</div>
+      <div class="admin-logo-text">Haq-Cademy</div>
+      <div class="admin-logo-badge">ADMIN</div>
+    </div>
+
+    <nav class="admin-nav">
+      <div class="admin-nav-section">
+        <div class="admin-nav-label">Overview</div>
+      </div>
+      <button class="admin-nav-link active" data-section="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+
+      <div class="admin-nav-section" style="margin-top:8px">
+        <div class="admin-nav-label">Content</div>
+      </div>
+      <button class="admin-nav-link" data-section="courses">
+        <span class="nav-icon">📚</span> Courses
+      </button>
+      <button class="admin-nav-link" data-section="modules">
+        <span class="nav-icon">📁</span> Modules
+      </button>
+      <button class="admin-nav-link" data-section="lessons">
+        <span class="nav-icon">🎬</span> Lessons
+      </button>
+      <button class="admin-nav-link" data-section="instructors">
+        <span class="nav-icon">👤</span> Instructors
+      </button>
+
+      <div class="admin-nav-section" style="margin-top:8px">
+        <div class="admin-nav-label">Analytics</div>
+      </div>
+      <button class="admin-nav-link" data-section="progress">
+        <span class="nav-icon">📈</span> Student Progress
+      </button>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <button id="logoutBtn" class="admin-nav-link" style="color:rgba(255,255,255,0.4)">
+        <span class="nav-icon">🚪</span> Logout
+      </button>
+      <a href="/" target="_blank" class="admin-nav-link" style="font-size:0.8rem;color:rgba(255,255,255,0.35)">
+        <span class="nav-icon">🌐</span> View Site
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="admin-topbar-actions">
+        <div class="admin-user">👤 <span id="adminUsername">admin</span></div>
+      </div>
+    </div>
+
+    <div class="admin-content" id="adminContent">
+      <div class="admin-loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Modal</h3>
+      <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;font-size:1.25rem;color:var(--text-muted)">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="modalSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Section Templates -->
+<template id="tplDashboard">
+  <div class="admin-stats" id="adminStats">
+    <div class="admin-stat-card skeleton" style="height:100px"></div>
+    <div class="admin-stat-card skeleton" style="height:100px"></div>
+    <div class="admin-stat-card skeleton" style="height:100px"></div>
+    <div class="admin-stat-card skeleton" style="height:100px"></div>
+  </div>
+  <div class="admin-panel">
+    <div class="admin-panel-header">
+      <span class="admin-panel-title">Recent Activity</span>
+      <button class="btn btn-secondary btn-sm" onclick="adminApp.recalcDurations()">🔄 Recalculate Durations</button>
+    </div>
+    <div class="admin-panel-body" id="recentActivity">
+      <div class="admin-loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+</template>
+
+<template id="tplCourses">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2 style="font-size:1.25rem;font-weight:700">Courses</h2>
+    <button class="btn btn-primary btn-sm" onclick="adminApp.openCourseModal()">+ Add Course</button>
+  </div>
+  <div class="admin-panel">
+    <div class="admin-panel-body" style="padding:0">
+      <table class="admin-table" id="coursesTable">
+        <thead><tr>
+          <th>Course</th><th>Instructor</th><th>Duration</th><th>Lessons</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="coursesTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<template id="tplModules">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2 style="font-size:1.25rem;font-weight:700">Modules</h2>
+    <button class="btn btn-primary btn-sm" onclick="adminApp.openModuleModal()">+ Add Module</button>
+  </div>
+  <div style="margin-bottom:16px">
+    <label class="form-label">Filter by Course</label>
+    <select class="form-control" id="moduleCourseFilter" style="max-width:320px">
+      <option value="">All Courses</option>
+    </select>
+  </div>
+  <div class="admin-panel">
+    <div class="admin-panel-body" style="padding:0">
+      <table class="admin-table" id="modulesTable">
+        <thead><tr>
+          <th>#</th><th>Module Title</th><th>Course</th><th>Lessons</th><th>Duration</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="modulesTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<template id="tplLessons">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2 style="font-size:1.25rem;font-weight:700">Lessons</h2>
+    <button class="btn btn-primary btn-sm" onclick="adminApp.openLessonModal()">+ Add Lesson</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div>
+      <label class="form-label">Filter by Course</label>
+      <select class="form-control" id="lessonCourseFilter"><option value="">All Courses</option></select>
+    </div>
+    <div>
+      <label class="form-label">Filter by Module</label>
+      <select class="form-control" id="lessonModuleFilter"><option value="">All Modules</option></select>
+    </div>
+  </div>
+  <div class="admin-panel">
+    <div class="admin-panel-body" style="padding:0;overflow-x:auto">
+      <table class="admin-table" id="lessonsTable">
+        <thead><tr>
+          <th>#</th><th>Lesson Title</th><th>Module</th><th>Duration</th><th>Video</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="lessonsTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<template id="tplInstructors">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2 style="font-size:1.25rem;font-weight:700">Instructors</h2>
+    <button class="btn btn-primary btn-sm" onclick="adminApp.openInstructorModal()">+ Add Instructor</button>
+  </div>
+  <div class="admin-panel">
+    <div class="admin-panel-body" style="padding:0">
+      <table class="admin-table" id="instructorsTable">
+        <thead><tr>
+          <th>Name</th><th>Email</th><th>Teaching Hours</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="instructorsTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<template id="tplProgress">
+  <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:20px">Student Progress</h2>
+  <div class="admin-panel">
+    <div class="admin-panel-body" style="padding:0;overflow-x:auto">
+      <table class="admin-table" id="progressTable">
+        <thead><tr>
+          <th>Session ID</th><th>Course</th><th>Progress</th><th>Lessons Done</th><th>Last Activity</th>
+        </tr></thead>
+        <tbody id="progressTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script src="/js/api-client.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

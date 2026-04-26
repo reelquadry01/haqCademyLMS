@@ -1,0 +1,9 @@
+node_modules/
+database/lms.db
+database/lms.db-wal
+database/lms.db-shm
+.env
+*.env.local
+uploads/
+.DS_Store
+Thumbs.db
